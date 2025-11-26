@@ -20,6 +20,7 @@ class AppProvider with ChangeNotifier {
   List<String> _facts = [];
   UserProfile _userProfile = UserProfile();
   int _currentThemeIndex = 0;
+  int _currentAnimationMode = 0; // 0: Breathing, 1: Glow, 2: Rainbow
 
   // Getters
   List<Record> get records => _records;
@@ -31,6 +32,7 @@ class AppProvider with ChangeNotifier {
   List<String> get quotes => _quotes;
   UserProfile get userProfile => _userProfile;
   int get currentThemeIndex => _currentThemeIndex;
+  int get currentAnimationMode => _currentAnimationMode;
 
   AppProvider() {
     _init();
@@ -43,6 +45,7 @@ class AppProvider with ChangeNotifier {
     _facts = await AssetsLoader.loadFacts();
     _userProfile = await PersistenceHelper.loadUserProfile();
     _currentThemeIndex = await PersistenceHelper.loadTheme();
+    _currentAnimationMode = await PersistenceHelper.loadAnimationMode();
     
     // Generate dummy data if empty (for testing/demo)
     if (_records.isEmpty) {
@@ -55,6 +58,12 @@ class AppProvider with ChangeNotifier {
   void setTheme(int index) {
     _currentThemeIndex = index;
     PersistenceHelper.saveTheme(index);
+    notifyListeners();
+  }
+
+  void setAnimationMode(int mode) {
+    _currentAnimationMode = mode;
+    PersistenceHelper.saveAnimationMode(mode);
     notifyListeners();
   }
 
@@ -172,8 +181,11 @@ class AppProvider with ChangeNotifier {
   }
 
   // History Logic
-  void logSmoke({String? reason}) {
-    final record = Record.smoked(reason: reason);
+  void logSmoke({String? reason, DateTime? timestamp}) {
+    final record = Record.smoked(
+      reason: reason,
+      start: timestamp != null ? timestamp.millisecondsSinceEpoch ~/ 1000 : null,
+    );
     _addRecord(record);
   }
 

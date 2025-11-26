@@ -13,65 +13,90 @@ class WeeklyCalendar extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<AppProvider>(context);
     final now = DateTime.now();
-    // Generate last 7 days including today
-    final weekDates = List.generate(7, (index) {
-      return now.subtract(Duration(days: 6 - index));
-    });
+    final today = DateTime(now.year, now.month, now.day);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 10),
-          child: Text('最近一周', style: AppTheme.heading2),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: weekDates.map((date) {
-            final hasSmoked = _hasSmokedOnDate(provider.records, date);
-            final isToday = date.day == now.day && date.month == now.month && date.year == now.year;
-            
-            return GestureDetector(
-              onTap: () => _showDailyDetails(context, provider, date),
-              child: Column(
-                children: [
-                  Text(
-                    DateFormat('E', 'zh').format(date), // Weekday
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                      fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: hasSmoked ? AppTheme.text : (isToday ? AppTheme.primary.withOpacity(0.2) : Colors.grey[200]),
-                      shape: BoxShape.circle,
-                      border: isToday ? Border.all(color: AppTheme.primary, width: 2) : null,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${date.day}',
-                      style: TextStyle(
-                        color: hasSmoked ? Colors.white : (isToday ? AppTheme.primary : Colors.black54),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  if (hasSmoked)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4),
-                      child: Icon(Icons.circle, size: 6, color: AppTheme.text),
-                    ),
-                ],
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('最近两周', style: AppTheme.heading2),
+          const SizedBox(height: 12),
+          // First week (days 13-7 ago)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(7, (index) {
+              final date = today.subtract(Duration(days: 13 - index));
+              return _buildDayCell(context, provider, date, today);
+            }),
+          ),
+          const SizedBox(height: 8),
+          // Second week (days 6-0 ago, including today)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(7, (index) {
+              final date = today.subtract(Duration(days: 6 - index));
+              return _buildDayCell(context, provider, date, today);
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDayCell(BuildContext context, AppProvider provider, DateTime date, DateTime today) {
+    final hasSmoked = _hasSmokedOnDate(provider.records, date);
+    final isToday = date.day == today.day && date.month == today.month && date.year == today.year;
+    
+    return GestureDetector(
+      onTap: () => _showDailyDetails(context, provider, date),
+      child: Column(
+        children: [
+          Text(
+            DateFormat('E', 'zh').format(date),
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 10,
+              fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: hasSmoked ? AppTheme.text : (isToday ? AppTheme.primary.withOpacity(0.2) : Colors.grey[200]),
+              shape: BoxShape.circle,
+              border: isToday ? Border.all(color: AppTheme.primary, width: 2) : null,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              '${date.day}',
+              style: TextStyle(
+                color: hasSmoked ? Colors.white : (isToday ? AppTheme.primary : Colors.black54),
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
               ),
-            );
-          }).toList(),
-        ),
-      ],
+            ),
+          ),
+          if (hasSmoked)
+            const Padding(
+              padding: EdgeInsets.only(top: 2),
+              child: Icon(Icons.circle, size: 4, color: AppTheme.text),
+            ),
+        ],
+      ),
     );
   }
 

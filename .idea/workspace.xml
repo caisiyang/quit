@@ -6,16 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="ec356dc5-c34e-46d1-8287-79a42d696b8c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/record.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/record.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/l10n/app_strings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/l10n/app_strings.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/grade_system.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/grade_system.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/providers/app_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/app_provider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/resources/theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/resources/theme.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/screens/discover_tab.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/discover_tab.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/screens/history_tab.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/history_tab.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/screens/surfing_tab.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/surfing_tab.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/services/persistence_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/persistence_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/quit.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/grade_details_dialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/grade_details_dialog.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/rotating_quote_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/rotating_quote_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/user_profile_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/user_profile_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/weekly_calendar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/weekly_calendar.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

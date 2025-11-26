@@ -64,4 +64,19 @@ class GradeSystem {
     // Success if at least one resisted record >= threshold
     return dayRecords.any((r) => r.type == 'resisted' && (r.duration ?? 0) >= threshold);
   }
+  static String getHealthBenefit(String grade) {
+    switch (grade) {
+      case 'C10': return '心率开始平复，血压轻微下降。';
+      case 'C9': return '焦虑感开始减弱，深呼吸让氧气水平回升。';
+      case 'C8': return '手脚温度开始回升，血液循环改善。';
+      case 'C7': return '强烈的尼古丁渴望达到顶峰后开始消退。';
+      case 'C6': return '大脑多巴胺水平波动趋于平稳，情绪更稳定。';
+      case 'C5': return '血压和脉搏恢复正常水平。';
+      case 'C4': return '血液中的尼古丁含量减半，身体开始清理毒素。';
+      case 'C3': return '血液中氧气含量恢复正常，一氧化碳水平下降。';
+      case 'C2': return '神经末梢开始再生，嗅觉和味觉变得敏锐。';
+      case 'C1': return '血液中一氧化碳含量恢复正常水平。';
+      default: return '持续的自我掌控，显著降低心脏病风险，肺功能开始改善。';
+    }
+  }
 }

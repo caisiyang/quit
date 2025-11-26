@@ -72,15 +72,22 @@ class _RotatingQuoteCardState extends State<RotatingQuoteCard> {
         transitionBuilder: (Widget child, Animation<double> animation) {
           return FadeTransition(opacity: animation, child: child);
         },
-        child: Text(
-          _currentText,
-          key: ValueKey<String>(_currentText),
-          style: AppTheme.body.copyWith(
-            fontSize: 16,
-            fontStyle: FontStyle.italic,
-            color: AppTheme.text.withOpacity(0.8),
+        child: SizedBox(
+          height: 48, // Approx height for 2 lines (16 * 1.5 * 2)
+          child: Center(
+            child: Text(
+              _currentText,
+              key: ValueKey<String>(_currentText),
+              style: AppTheme.body.copyWith(
+                fontSize: 16,
+                fontStyle: FontStyle.italic,
+                color: AppTheme.text.withOpacity(0.8),
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          textAlign: TextAlign.center,
         ),
       ),
     );

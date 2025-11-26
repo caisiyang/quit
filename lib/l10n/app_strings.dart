@@ -9,13 +9,13 @@ class AppStrings {
   static const String confirmDeleteMessage = '你确定要清空所有记录吗？此操作无法撤销。';
 
   // Tabs
-  static const String tabSurfing = '冲浪';
+  static const String tabSurfing = '抵御';
   static const String tabHistory = '历史';
-  static const String tabDiscover = '发现';
+  static const String tabDiscover = '我的';
 
   // Surfing Tab
   static const String idleStartButton = '烟瘾来袭';
-  static const String surfingTimerLabel = '冲浪中...';
+  static const String surfingTimerLabel = '抵御烟瘾中';
   static const String surfingFinishButton = '我挺过去了';
   static const String levelUpMessage = '升级了！';
   static const String levelDownMessage = '别灰心，继续加油。';

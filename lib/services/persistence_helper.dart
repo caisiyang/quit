@@ -55,4 +55,14 @@ class PersistenceHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt('theme_index') ?? 0;
   }
+
+  static Future<void> saveAnimationMode(int mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('animation_mode', mode);
+  }
+
+  static Future<int> loadAnimationMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('animation_mode') ?? 0;
+  }
 }

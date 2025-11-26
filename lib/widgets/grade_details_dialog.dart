@@ -45,13 +45,26 @@ class GradeDetailsDialog extends StatelessWidget {
                   final isCurrent = grade == currentGrade;
 
                   return Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    color: isCurrent ? AppTheme.primary.withOpacity(0.1) : null,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: isCurrent ? AppTheme.primary.withOpacity(0.1) : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(grade, style: TextStyle(fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal)),
-                        Text(durationText, style: TextStyle(color: Colors.grey)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(grade, style: TextStyle(fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal, fontSize: 16)),
+                            Text('抵御 $durationText', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          GradeSystem.getHealthBenefit(grade),
+                          style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                        ),
                       ],
                     ),
                   );

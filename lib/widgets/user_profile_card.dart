@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/user_profile.dart';
@@ -34,18 +32,6 @@ class _UserProfileCardState extends State<UserProfileCard> {
     _yearsController.dispose();
     _dailyController.dispose();
     super.dispose();
-  }
-
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    
-    if (image != null) {
-      final provider = Provider.of<AppProvider>(context, listen: false);
-      final newProfile = provider.userProfile;
-      newProfile.avatarPath = image.path;
-      provider.updateUserProfile(newProfile);
-    }
   }
 
   void _toggleEdit() {
@@ -85,35 +71,17 @@ class _UserProfileCardState extends State<UserProfileCard> {
         children: [
           Row(
             children: [
-              GestureDetector(
-                onTap: _isEditing ? _pickImage : null,
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.grey[200],
-                      backgroundImage: profile.avatarPath != null 
-                          ? FileImage(File(profile.avatarPath!)) 
-                          : null,
-                      child: profile.avatarPath == null 
-                          ? const Icon(Icons.person, size: 30, color: Colors.grey) 
-                          : null,
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    child: Text(
+                      provider.currentGrade,
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
                     ),
-                    if (_isEditing)
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: AppTheme.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.camera_alt, size: 12, color: Colors.white),
-                        ),
-                      ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               const SizedBox(width: 16),
               Expanded(

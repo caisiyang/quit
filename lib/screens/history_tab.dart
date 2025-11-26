@@ -7,33 +7,22 @@ import '../l10n/app_strings.dart';
 import '../models/record.dart';
 import '../widgets/custom_button.dart';
 
+import '../widgets/weekly_calendar.dart';
+
 class HistoryTab extends StatelessWidget {
   const HistoryTab({super.key});
 
-  String _formatDate(int? timestamp) {
-    if (timestamp == null) return '';
-    final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-    return DateFormat('MMM d, y HH:mm').format(date);
-  }
-
-  String _formatDuration(int? seconds) {
-    if (seconds == null) return '';
-    final int minutes = seconds ~/ 60;
-    final int remainingSeconds = seconds % 60;
-    return '${minutes}m ${remainingSeconds}s';
-  }
-
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AppProvider>(context);
-    final records = provider.records.reversed.toList(); // Show newest first
-
     return Padding(
       padding: const EdgeInsets.all(AppTheme.padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Stats Panel
+          const Text('抽烟记录', style: AppTheme.heading1),
+          const SizedBox(height: 20),
+
+          // Today's Record Card
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -48,148 +37,56 @@ class HistoryTab extends StatelessWidget {
               ],
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(AppStrings.todayStats, style: AppTheme.heading2),
+                const Text('今日记录', style: AppTheme.heading2),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildStatItem(
-                      AppStrings.resistedLabel,
-                      '${provider.todayResistedCount}',
-                      AppTheme.primary,
-                    ),
-                    _buildStatItem(
-                      AppStrings.durationLabel,
-                      '${provider.todayResistedDuration ~/ 60}m',
-                      AppTheme.primary,
-                    ),
-                    _buildStatItem(
-                      AppStrings.smokedLabel,
-                      '${provider.todaySmokedCount}',
-                      AppTheme.text,
-                    ),
+                    _buildStatItem('抵御次数', '${Provider.of<AppProvider>(context).todayResistedCount}', AppTheme.primary),
+                    _buildStatItem('抵御时长', '${Provider.of<AppProvider>(context).todayResistedDuration ~/ 60}分', AppTheme.primary),
+                    _buildStatItem('抽烟根数', '${Provider.of<AppProvider>(context).todaySmokedCount}', AppTheme.text),
                   ],
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
           
-          // Quick Action
+          // Weekly Calendar
+          const WeeklyCalendar(),
+          
+          const Spacer(),
+          // You might want to keep the clear history button somewhere, or maybe not if it wasn't requested in the new design.
+          // The user asked to "change the whole thing to a 1 week calendar".
+          // I'll leave a small clear button at the bottom just in case.
           Center(
-            child: CustomButton(
-              text: AppStrings.logSmokeButton,
-              onPressed: () => _showSmokeDialog(context, provider),
-              backgroundColor: Colors.grey[300],
-              textColor: AppTheme.text,
+            child: TextButton.icon(
+              onPressed: () => _showClearHistoryDialog(context, Provider.of<AppProvider>(context, listen: false)),
+              icon: const Icon(Icons.delete_outline, color: Colors.grey),
+              label: const Text('清空所有记录', style: TextStyle(color: Colors.grey)),
             ),
-          ),
-          const SizedBox(height: 20),
-          
-          // List Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('History', style: AppTheme.heading2),
-              IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.grey),
-                onPressed: () => _showClearHistoryDialog(context, provider),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          
-          // List
-          Expanded(
-            child: records.isEmpty
-                ? const Center(child: Text(AppStrings.historyEmpty))
-                : ListView.builder(
-                    itemCount: records.length,
-                    itemBuilder: (context, index) {
-                      final record = records[index];
-                      final isResisted = record.type == 'resisted';
-                      return Card(
-                        child: ListTile(
-                          leading: Icon(
-                            isResisted ? Icons.shield : Icons.smoking_rooms,
-                            color: isResisted ? AppTheme.primary : Colors.grey,
-                          ),
-                          title: Text(
-                            isResisted ? AppStrings.resistedLabel : AppStrings.smokedLabel,
-                            style: AppTheme.body.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: isResisted ? AppTheme.primary : AppTheme.text,
-                            ),
-                          ),
-                          subtitle: Text(_formatDate(record.start)),
-                          trailing: isResisted
-                              ? Text(
-                                  _formatDuration(record.duration),
-                                  style: AppTheme.body.copyWith(fontWeight: FontWeight.bold),
-                                )
-                              : Text(
-                                  record.reason ?? '',
-                                  style: AppTheme.body.copyWith(color: Colors.grey),
-                                ),
-                        ),
-                      );
-                    },
-                  ),
           ),
         ],
       ),
     );
   }
+
+
 
   Widget _buildStatItem(String label, String value, Color color) {
     return Column(
       children: [
         Text(
           value,
-          style: AppTheme.heading2.copyWith(color: color),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
         ),
         Text(
           label,
-          style: AppTheme.body.copyWith(fontSize: 12, color: Colors.grey),
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
         ),
       ],
-    );
-  }
-
-  void _showSmokeDialog(BuildContext context, AppProvider provider) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(AppStrings.logSmokeButton),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _reasonButton(context, provider, AppStrings.reasonStress),
-            _reasonButton(context, provider, AppStrings.reasonBoredom),
-            _reasonButton(context, provider, AppStrings.reasonCraving),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text(AppStrings.cancel),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _reasonButton(BuildContext context, AppProvider provider, String reason) {
-    return SizedBox(
-      width: double.infinity,
-      child: TextButton(
-        onPressed: () {
-          provider.logSmoke(reason: reason);
-          Navigator.pop(context);
-        },
-        child: Text(reason),
-      ),
     );
   }
 

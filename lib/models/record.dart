@@ -17,21 +17,22 @@ class Record {
     this.reason,
   });
 
-  factory Record.resisted({required int start, required int end}) {
+  factory Record.resisted({int? start, int? end, int? duration}) {
     return Record(
       id: const Uuid().v4(),
       type: 'resisted',
       start: start,
       end: end,
-      duration: end - start,
+      duration: duration ?? (end! - start!),
     );
   }
 
-  factory Record.smoked({String? reason}) {
+  factory Record.smoked({String? reason, int? start, int? duration}) {
     return Record(
       id: const Uuid().v4(),
       type: 'smoked',
-      start: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      start: start ?? DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      duration: duration,
       reason: reason,
     );
   }

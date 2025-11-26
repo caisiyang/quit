@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../models/record.dart';
 import '../models/grade_system.dart';
+import '../models/user_profile.dart';
 import '../services/persistence_helper.dart';
 import '../resources/assets_loader.dart';
 
@@ -17,6 +18,8 @@ class AppProvider with ChangeNotifier {
   String _currentQuote = "Breathe.";
   List<String> _quotes = [];
   List<String> _facts = [];
+  UserProfile _userProfile = UserProfile();
+  int _currentThemeIndex = 0;
 
   // Getters
   List<Record> get records => _records;
@@ -26,6 +29,8 @@ class AppProvider with ChangeNotifier {
   String get currentQuote => _currentQuote;
   List<String> get facts => _facts;
   List<String> get quotes => _quotes;
+  UserProfile get userProfile => _userProfile;
+  int get currentThemeIndex => _currentThemeIndex;
 
   AppProvider() {
     _init();
@@ -36,7 +41,98 @@ class AppProvider with ChangeNotifier {
     _currentGrade = await PersistenceHelper.loadGrade();
     _quotes = await AssetsLoader.loadQuotes();
     _facts = await AssetsLoader.loadFacts();
+    _userProfile = await PersistenceHelper.loadUserProfile();
+    _currentThemeIndex = await PersistenceHelper.loadTheme();
+    
+    // Generate dummy data if empty (for testing/demo)
+    if (_records.isEmpty) {
+      _generateDummyData();
+    }
+    
     notifyListeners();
+  }
+
+  void setTheme(int index) {
+    _currentThemeIndex = index;
+    PersistenceHelper.saveTheme(index);
+    notifyListeners();
+  }
+
+  void updateUserProfile(UserProfile newProfile) {
+    _userProfile = newProfile;
+    PersistenceHelper.saveUserProfile(_userProfile);
+    notifyListeners();
+  }
+
+  void failSurfing(String reason) {
+    _timer?.cancel();
+    _isSurfing = false;
+    
+    final record = Record.smoked(
+      reason: reason,
+      duration: _elapsedSeconds,
+    );
+    _records.add(record);
+    PersistenceHelper.saveRecords(_records);
+    
+    _elapsedSeconds = 0;
+    notifyListeners();
+  }
+
+  void _generateDummyData() {
+    final now = DateTime.now();
+    final random = Random();
+    _records.clear(); // Clear existing to ensure we have fresh 3 days data
+    
+    for (int i = 0; i < 3; i++) {
+      final date = now.subtract(Duration(days: i));
+      
+      // 1. Normal Smoked Records (No surfing)
+      int directSmokedCount = 10 + random.nextInt(5); 
+      for (int j = 0; j < directSmokedCount; j++) {
+        final hour = 8 + random.nextInt(14);
+        final minute = random.nextInt(60);
+        final recordTime = DateTime(date.year, date.month, date.day, hour, minute);
+        
+        _records.add(Record.smoked(
+          start: recordTime.millisecondsSinceEpoch ~/ 1000,
+          reason: ['习惯', '社交', '饭后'][random.nextInt(3)],
+        ));
+      }
+      
+      // 2. Failed Surfing Records (Smoked after resisting)
+      int failedSurfingCount = 3 + random.nextInt(3);
+      for (int j = 0; j < failedSurfingCount; j++) {
+        final hour = 8 + random.nextInt(14);
+        final minute = random.nextInt(60);
+        final recordTime = DateTime(date.year, date.month, date.day, hour, minute);
+        final duration = 30 + random.nextInt(120); // Resisted 30s - 2m then smoked
+        
+        _records.add(Record.smoked(
+          start: recordTime.millisecondsSinceEpoch ~/ 1000,
+          duration: duration,
+          reason: '没忍住',
+        ));
+      }
+      
+      // 3. Successful Surfing Records (Resisted)
+      int resistedCount = 5 + random.nextInt(5);
+      for (int j = 0; j < resistedCount; j++) {
+         final hour = 8 + random.nextInt(14);
+         final minute = random.nextInt(60);
+         final recordTime = DateTime(date.year, date.month, date.day, hour, minute);
+         final duration = 300 + random.nextInt(600); // 5-15 minutes
+         
+         _records.add(Record.resisted(
+           start: recordTime.millisecondsSinceEpoch ~/ 1000,
+           end: (recordTime.millisecondsSinceEpoch ~/ 1000) + duration,
+           duration: duration,
+         ));
+      }
+    }
+    // Sort records by time
+    _records.sort((a, b) => (a.start ?? 0).compareTo(b.start ?? 0));
+    PersistenceHelper.saveRecords(_records);
   }
 
   // Surfing Logic

@@ -1,0 +1,7 @@
+name = "quit"
+pages_build_output_dir = "."
+compatibility_date = "2024-04-05"
+
+[[r2_buckets]]
+binding = "EVA_QUOTES"
+bucket_name = "eva-quotes"

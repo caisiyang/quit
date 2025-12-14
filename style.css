@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Han+Serif+SC:wght@400;700;900&display=swap');
+
+:root {
+    --eva-black: #000000;
+    --eva-orange: #FF6600;
+    --eva-red: #CC0000;
+    --eva-green: #00FF00;
+    --eva-dark-gray: #1a1a1a;
+}
+
+body {
+    background-color: var(--eva-black);
+    color: var(--eva-orange);
+    font-family: 'Source Han Serif SC', serif;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Hexagon Background Pattern */
+.bg-hex {
+    background-image:
+        linear-gradient(30deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111),
+        linear-gradient(150deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111),
+        linear-gradient(30deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111),
+        linear-gradient(150deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111),
+        radial-gradient(#1a1a1a 20%, transparent 20%);
+    background-size: 30px 52px;
+    background-position: 0 0, 0 0, 15px 26px, 15px 26px, 0 0;
+}
+
+/* EVA UI Elements */
+.eva-border {
+    border: 2px solid var(--eva-orange);
+    border: 2px solid var(--eva-orange);
+    /* clip-path removed to fix label visibility issues */
+    /* clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); */
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.eva-border-red {
+    border-color: var(--eva-red);
+    color: var(--eva-red);
+}
+
+.eva-text-shadow {
+    text-shadow: 0 0 5px var(--eva-orange);
+}
+
+.eva-text-shadow-red {
+    text-shadow: 0 0 5px var(--eva-red);
+}
+
+.btn-eva {
+    background: var(--eva-orange);
+    color: var(--eva-black);
+    font-weight: 900;
+    text-transform: uppercase;
+    border: none;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    padding: 1rem 2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-eva:active {
+    transform: scale(0.95);
+    background: #ff8533;
+}
+
+.btn-eva-red {
+    background: var(--eva-red);
+}
+
+.btn-eva-red:active {
+    background: #ff3333;
+}
+
+.eva-panel {
+    border-left: 4px solid var(--eva-orange);
+    background: linear-gradient(90deg, rgba(255, 102, 0, 0.1) 0%, transparent 100%);
+    padding: 10px;
+}
+
+/* Glitch Effect */
+.glitch {
+    position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    left: 2px;
+    text-shadow: -1px 0 #cc0000;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+    left: -2px;
+    text-shadow: -1px 0 #00ff00;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% {
+        clip: rect(20px, 9999px, 80px, 0);
+    }
+
+    20% {
+        clip: rect(130px, 9999px, 160px, 0);
+    }
+
+    40% {
+        clip: rect(60px, 9999px, 100px, 0);
+    }
+
+    60% {
+        clip: rect(40px, 9999px, 120px, 0);
+    }
+
+    80% {
+        clip: rect(150px, 9999px, 180px, 0);
+    }
+
+    100% {
+        clip: rect(90px, 9999px, 140px, 0);
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0% {
+        clip: rect(100px, 9999px, 150px, 0);
+    }
+
+    20% {
+        clip: rect(10px, 9999px, 50px, 0);
+    }
+
+    40% {
+        clip: rect(120px, 9999px, 170px, 0);
+    }
+
+    60% {
+        clip: rect(30px, 9999px, 70px, 0);
+    }
+
+    80% {
+        clip: rect(10px, 9999px, 20px, 0);
+    }
+
+    100% {
+        clip: rect(80px, 9999px, 130px, 0);
+    }
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.relative {
+    position: relative;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.font-black {
+    font-weight: 900;
+}
+
+.tracking-widest {
+    letter-spacing: 0.2em;
+}
+
+/* Animations */
+/* Animations */
+@keyframes warning-pulse {
+
+    0%,
+    100% {
+        color: #FFFFFF;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        transform: scale(1);
+    }
+
+    50% {
+        color: #CC0000;
+        text-shadow: 0 0 20px rgba(204, 0, 0, 0.8), 0 0 40px rgba(204, 0, 0, 0.6);
+        transform: scale(1.05);
+    }
+}
+
+.animate-warning {
+    animation: warning-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+        filter: blur(0);
+    }
+
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+        filter: blur(2px);
+        color: red;
+    }
+
+    100% {
+        transform: scale(3);
+        opacity: 0;
+        filter: blur(10px);
+    }
+}
+
+.animate-explode {
+    animation: explode 0.8s ease-out forwards;
+}
+
+/* Toast for insults */
+.insult-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid var(--eva-red);
+    color: var(--eva-red);
+    padding: 1rem 2rem;
+    font-weight: 900;
+    font-size: 1.5rem;
+    z-index: 100;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(204, 0, 0, 0.5);
+    white-space: nowrap;
+}

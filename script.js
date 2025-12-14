@@ -99,15 +99,15 @@ const app = {
 
     async loadInsults() {
         try {
-            // Priority: Try R2 API first
-            const res = await fetch('/api/insults');
+            // Priority: Try R2 Custom Domain
+            const res = await fetch('https://r2.quit.saaaai.com/insults.json');
             if (res.ok) {
                 this.data.insults = await res.json();
             } else {
-                throw new Error("API Error");
+                throw new Error("R2 Domain Error");
             }
         } catch (e) {
-            console.warn("R2 API FAILED, FALLING BACK TO LOCAL ASSETS", e);
+            console.warn("R2 DOMAIN FAILED, FALLING BACK TO LOCAL/API", e);
             // Fallback: Local file
             try {
                 const localRes = await fetch('assets/insults.json');

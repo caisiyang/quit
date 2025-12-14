@@ -261,20 +261,38 @@ const app = {
             window.navTo('home');
         });
 
-        // Save Insult
-        this.elements.inputs.saveInsult.addEventListener('click', () => {
+        // Save Insult (Real API Submission)
+        this.elements.inputs.saveInsult.addEventListener('click', async () => {
             const text = this.elements.inputs.reason.value;
             if (!text) return;
 
-            // Mock Save Interaction
-            const div = document.createElement('div');
-            div.className = 'fixed top-10 left-1/2 transform -translate-x-1/2 bg-eva-green text-black font-bold px-6 py-3 rounded shadow-[0_0_20px_#00FF00] z-[100] text-center w-64';
-            div.innerText = "感谢你为所有人增加一条毒舌";
-            document.body.appendChild(div);
+            // UI Feedback: Loading
+            const btn = this.elements.inputs.saveInsult;
+            const originalText = btn.innerText;
+            btn.innerText = "...";
+            btn.disabled = true;
 
-            setTimeout(() => {
-                div.remove();
-            }, 2000);
+            try {
+                const res = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+
+                if (res.ok) {
+                    alert("毒舌已收录。感谢你为所有人贡献攻击力。");
+                    this.elements.inputs.reason.value = ""; // Clear input
+                    this.loadInsults(); // Reload to include new one
+                } else {
+                    alert("发送失败。可能是网络问题或内容太长。");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("系统错误：无法连接到神经中枢。");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         });
     },
 

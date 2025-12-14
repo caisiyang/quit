@@ -164,255 +164,254 @@ const app = {
         }
     });
 
-    startTimer() {
-        setInterval(() => {
-            if (!this.data.startDate) return;
 
-            const now = new Date();
-            const diff = now - this.data.startDate;
+    if(!this.data.startDate) return;
 
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / 1000 / 60) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
+    const now = new Date();
+    const diff = now - this.data.startDate;
 
-            this.elements.timer.main.innerText =
-                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            this.elements.timer.days.innerText = days;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / 1000 / 60) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
 
-        }, 1000);
+    this.elements.timer.main.innerText =
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    this.elements.timer.days.innerText = days;
+
+}, 1000);
     },
 
-    updateStats() {
-        if (!this.data.startDate) return;
+updateStats() {
+    if (!this.data.startDate) return;
 
-        const now = new Date();
-        const daysPassed = (now - this.data.startDate) / (1000 * 60 * 60 * 24);
+    const now = new Date();
+    const daysPassed = (now - this.data.startDate) / (1000 * 60 * 60 * 24);
 
-        // Money: Price of each cigarette * Successes
-        // Assuming Cost is per pack (20 cigs)
-        const pricePerCig = this.data.cost / 20;
-        const money = (this.data.successCount * pricePerCig).toFixed(2);
-        this.elements.stats.money.innerText = money;
+    // Money: Price of each cigarette * Successes
+    // Assuming Cost is per pack (20 cigs)
+    const pricePerCig = this.data.cost / 20;
+    const money = (this.data.successCount * pricePerCig).toFixed(2);
+    this.elements.stats.money.innerText = money;
 
-        // Fail Count
-        if (this.elements.stats.failCount) {
-            this.elements.stats.failCount.innerText = this.data.failCount;
-        }
+    // Fail Count
+    if (this.elements.stats.failCount) {
+        this.elements.stats.failCount.innerText = this.data.failCount;
+    }
 
-        // Health: Based on smoking years / 10
-        // e.g. 10 years smoking -> need 1 year (365 days) to recover
-        const recoveryYears = Math.max(1, this.data.years / 10);
-        const recoveryDays = recoveryYears * 365;
-        let health = (daysPassed / recoveryDays) * 100;
+    // Health: Based on smoking years / 10
+    // e.g. 10 years smoking -> need 1 year (365 days) to recover
+    const recoveryYears = Math.max(1, this.data.years / 10);
+    const recoveryDays = recoveryYears * 365;
+    let health = (daysPassed / recoveryDays) * 100;
 
-        if (health > 100) health = 100;
-        if (health < 0) health = 0; // Should not happen
+    if (health > 100) health = 100;
+    if (health < 0) health = 0; // Should not happen
 
-        this.elements.stats.healthBar.style.width = `${health}%`;
-        this.elements.stats.healthBar.nextElementSibling.innerText = `${health.toFixed(2)}%`;
+    this.elements.stats.healthBar.style.width = `${health}%`;
+    this.elements.stats.healthBar.nextElementSibling.innerText = `${health.toFixed(2)}%`;
 
-        // Pollution Rate (Home Screen)
-        // Starts at 100%, -2% per success. 50 successes = 0%.
-        let pollution = 100 - (this.data.successCount * 2);
-        if (pollution < 0) pollution = 0;
-        this.elements.timer.pollution.innerText = `${pollution}%`;
-    },
+    // Pollution Rate (Home Screen)
+    // Starts at 100%, -2% per success. 50 successes = 0%.
+    let pollution = 100 - (this.data.successCount * 2);
+    if (pollution < 0) pollution = 0;
+    this.elements.timer.pollution.innerText = `${pollution}%`;
+},
 
-    setupListeners() {
-        // Navigation Global Function
-        window.navTo = (id) => {
-            const views = ['home', 'stats', 'profile'];
-            const idx = views.indexOf(id);
+setupListeners() {
+    // Navigation Global Function
+    window.navTo = (id) => {
+        const views = ['home', 'stats', 'profile'];
+        const idx = views.indexOf(id);
 
-            this.elements.views.home.style.transform = `translateX(${(0 - idx) * 100}%)`;
-            this.elements.views.stats.style.transform = `translateX(${(1 - idx) * 100}%)`;
-            this.elements.views.profile.style.transform = `translateX(${(2 - idx) * 100}%)`;
+        this.elements.views.home.style.transform = `translateX(${(0 - idx) * 100}%)`;
+        this.elements.views.stats.style.transform = `translateX(${(1 - idx) * 100}%)`;
+        this.elements.views.profile.style.transform = `translateX(${(2 - idx) * 100}%)`;
 
-            // Update Tab Styles
-            document.querySelectorAll('.h-16 button').forEach((btn, i) => {
-                if (i === idx) {
-                    btn.classList.add('active');
-                    btn.querySelector('.text-gray-500').classList.add('text-eva-orange');
-                    btn.querySelector('.text-gray-500').classList.remove('text-gray-500');
-                } else {
-                    btn.classList.remove('active');
-                    const num = btn.querySelector('span:first-child');
-                    num.classList.add('text-gray-500');
-                    num.classList.remove('text-eva-orange');
-                }
-            });
-        };
-
-        // SOS Button
-        document.getElementById('btn-sos').addEventListener('click', () => this.startSOS());
-
-        // Give Up Button
-        document.getElementById('btn-giveup').addEventListener('click', () => this.handleGiveUp());
-
-        // Profile Save
-        this.elements.inputs.form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.data.reason = this.elements.inputs.reason.value;
-            this.data.years = parseFloat(this.elements.inputs.years.value);
-            this.data.cost = parseFloat(this.elements.inputs.cost.value);
-            this.saveData();
-            alert("数据已更新。");
-            window.navTo('home');
-        });
-
-        // Save Insult
-        this.elements.inputs.saveInsult.addEventListener('click', () => {
-            const text = this.elements.inputs.reason.value;
-            if (!text) return;
-
-            // Mock Save Interaction
-            const div = document.createElement('div');
-            div.className = 'fixed top-10 left-1/2 transform -translate-x-1/2 bg-eva-green text-black font-bold px-6 py-3 rounded shadow-[0_0_20px_#00FF00] z-[100] text-center w-64';
-            div.innerText = "感谢你为所有人增加一条毒舌";
-            document.body.appendChild(div);
-
-            setTimeout(() => {
-                div.remove();
-            }, 2000);
-        });
-    },
-
-    startSOS() {
-        const modal = document.getElementById('sos-modal');
-        const quoteEl = document.getElementById('glitch-quote');
-        const timerEl = document.querySelector('#sos-timer');
-
-        modal.classList.remove('hidden');
-        // Add warning pulse effect (Readable)
-        quoteEl.classList.add('animate-warning');
-
-        // Immediate Random Quote
-        if (this.data.insults.length > 0) {
-            const startRnd = Math.floor(Math.random() * this.data.insults.length);
-            quoteEl.innerText = this.data.insults[startRnd];
-        }
-
-        let timeLeft = 300; // 5 Minutes
-
-        // Quote Cycle (Readable Warning Text)
-        this.quoteInterval = setInterval(() => {
-            if (this.data.insults.length > 0) {
-                const rnd = Math.floor(Math.random() * this.data.insults.length);
-                quoteEl.innerText = this.data.insults[rnd];
+        // Update Tab Styles
+        document.querySelectorAll('.h-16 button').forEach((btn, i) => {
+            if (i === idx) {
+                btn.classList.add('active');
+                btn.querySelector('.text-gray-500').classList.add('text-eva-orange');
+                btn.querySelector('.text-gray-500').classList.remove('text-gray-500');
+            } else {
+                btn.classList.remove('active');
+                const num = btn.querySelector('span:first-child');
+                num.classList.add('text-gray-500');
+                num.classList.remove('text-eva-orange');
             }
+        });
+    };
+
+    // SOS Button
+    document.getElementById('btn-sos').addEventListener('click', () => this.startSOS());
+
+    // Give Up Button
+    document.getElementById('btn-giveup').addEventListener('click', () => this.handleGiveUp());
+
+    // Profile Save
+    this.elements.inputs.form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.data.reason = this.elements.inputs.reason.value;
+        this.data.years = parseFloat(this.elements.inputs.years.value);
+        this.data.cost = parseFloat(this.elements.inputs.cost.value);
+        this.saveData();
+        alert("数据已更新。");
+        window.navTo('home');
+    });
+
+    // Save Insult
+    this.elements.inputs.saveInsult.addEventListener('click', () => {
+        const text = this.elements.inputs.reason.value;
+        if (!text) return;
+
+        // Mock Save Interaction
+        const div = document.createElement('div');
+        div.className = 'fixed top-10 left-1/2 transform -translate-x-1/2 bg-eva-green text-black font-bold px-6 py-3 rounded shadow-[0_0_20px_#00FF00] z-[100] text-center w-64';
+        div.innerText = "感谢你为所有人增加一条毒舌";
+        document.body.appendChild(div);
+
+        setTimeout(() => {
+            div.remove();
         }, 2000);
+    });
+},
 
-        // Countdown
-        this.timerInterval = setInterval(() => {
-            timeLeft--;
-            const mins = Math.floor(timeLeft / 60);
-            const secs = timeLeft % 60;
-            const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+startSOS() {
+    const modal = document.getElementById('sos-modal');
+    const quoteEl = document.getElementById('glitch-quote');
+    const timerEl = document.querySelector('#sos-timer');
 
-            timerEl.setAttribute('data-text', timeStr);
-            timerEl.innerText = timeStr;
+    modal.classList.remove('hidden');
+    // Add warning pulse effect (Readable)
+    quoteEl.classList.add('animate-warning');
 
-            if (timeLeft <= 0) {
-                this.clearSOS();
-                this.endSOS(true);
-            }
-        }, 1000);
-    },
+    // Immediate Random Quote
+    if (this.data.insults.length > 0) {
+        const startRnd = Math.floor(Math.random() * this.data.insults.length);
+        quoteEl.innerText = this.data.insults[startRnd];
+    }
 
-    handleGiveUp() {
-        // 1. Prompt for "耻辱"
-        const punishment = prompt("输入“耻辱”二字，承认你的软弱：");
+    let timeLeft = 300; // 5 Minutes
 
-        if (punishment === "耻辱") {
-            this.clearSOS(); // Stop timer/quotes
-            document.getElementById('sos-modal').classList.add('hidden');
-
-            // 2. Punishment Sequence (5 insults)
-            this.triggerPunishmentSequence();
-
-        } else {
-            alert("连承认错误的勇气都没有？回到地狱去吧！");
+    // Quote Cycle (Readable Warning Text)
+    this.quoteInterval = setInterval(() => {
+        if (this.data.insults.length > 0) {
+            const rnd = Math.floor(Math.random() * this.data.insults.length);
+            quoteEl.innerText = this.data.insults[rnd];
         }
-    },
+    }, 2000);
+
+    // Countdown
+    this.timerInterval = setInterval(() => {
+        timeLeft--;
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+        timerEl.setAttribute('data-text', timeStr);
+        timerEl.innerText = timeStr;
+
+        if (timeLeft <= 0) {
+            this.clearSOS();
+            this.endSOS(true);
+        }
+    }, 1000);
+},
+
+handleGiveUp() {
+    // 1. Prompt for "耻辱"
+    const punishment = prompt("输入“耻辱”二字，承认你的软弱：");
+
+    if (punishment === "耻辱") {
+        this.clearSOS(); // Stop timer/quotes
+        document.getElementById('sos-modal').classList.add('hidden');
+
+        // 2. Punishment Sequence (5 insults)
+        this.triggerPunishmentSequence();
+
+    } else {
+        alert("连承认错误的勇气都没有？回到地狱去吧！");
+    }
+},
 
     async triggerPunishmentSequence() {
-        // Show 4 insults, 1 per 2 seconds
-        for (let i = 0; i < 4; i++) {
-            const rnd = Math.floor(Math.random() * this.data.insults.length);
-            const text = this.data.insults[rnd];
-            this.showToast(text);
-            await new Promise(r => setTimeout(r, 2000));
-        }
-
-        // Final Toast
-        this.showToast("失败次数+1，懦夫");
+    // Show 4 insults, 1 per 2 seconds
+    for (let i = 0; i < 4; i++) {
+        const rnd = Math.floor(Math.random() * this.data.insults.length);
+        const text = this.data.insults[rnd];
+        this.showToast(text);
         await new Promise(r => setTimeout(r, 2000));
+    }
 
-        // 3. Explosion & Reset
-        this.triggerExplosion();
-    },
+    // Final Toast
+    this.showToast("失败次数+1，懦夫");
+    await new Promise(r => setTimeout(r, 2000));
 
-    showToast(text) {
-        const div = document.createElement('div');
-        div.className = 'insult-toast animate-pulse';
-        div.innerText = text;
-        document.body.appendChild(div);
-        setTimeout(() => div.remove(), 1800);
-    },
+    // 3. Explosion & Reset
+    this.triggerExplosion();
+},
 
-    triggerExplosion() {
-        const timerMain = this.elements.timer.main;
+showToast(text) {
+    const div = document.createElement('div');
+    div.className = 'insult-toast animate-pulse';
+    div.innerText = text;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 1800);
+},
 
-        // Add explosion Class
-        timerMain.classList.add('animate-explode');
+triggerExplosion() {
+    const timerMain = this.elements.timer.main;
 
-        // Wait for animation to finish then reset
-        setTimeout(() => {
-            timerMain.classList.remove('animate-explode');
+    // Add explosion Class
+    timerMain.classList.add('animate-explode');
 
-            // ACTUAL RESET LOGIC
-            this.data.failCount++;
-            this.data.startDate = new Date(); // Reset time to NOW
-            this.saveData();
+    // Wait for animation to finish then reset
+    setTimeout(() => {
+        timerMain.classList.remove('animate-explode');
 
-            // alert("时间线已重置。一切归零。\n失败次数 +1"); // REMOVED per user request
-            this.updateStats(); // Will set timer text to 00:00:00
+        // ACTUAL RESET LOGIC
+        this.data.failCount++;
+        this.data.startDate = new Date(); // Reset time to NOW
+        this.saveData();
 
-        }, 1000);
-    },
+        // alert("时间线已重置。一切归零。\n失败次数 +1"); // REMOVED per user request
+        this.updateStats(); // Will set timer text to 00:00:00
 
-    clearSOS() {
-        if (this.timerInterval) clearInterval(this.timerInterval);
-        if (this.quoteInterval) clearInterval(this.quoteInterval);
-        const quoteEl = document.getElementById('glitch-quote');
-        if (quoteEl) quoteEl.classList.remove('animate-warning');
-    },
+    }, 1000);
+},
 
-    endSOS(success) {
-        if (success) {
-            const modal = document.getElementById('sos-modal');
-            modal.classList.add('hidden');
-            this.data.successCount++;
-            this.saveData();
-            alert("居然挺过来了？是不是偷偷抽了没告诉我？\n\n香烟污染率下降 2%。\n获得金钱奖励。");
-        }
-    },
+clearSOS() {
+    if (this.timerInterval) clearInterval(this.timerInterval);
+    if (this.quoteInterval) clearInterval(this.quoteInterval);
+    const quoteEl = document.getElementById('glitch-quote');
+    if (quoteEl) quoteEl.classList.remove('animate-warning');
+},
 
-    checkPWA() {
-        // Basic iOS check
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+endSOS(success) {
+    if (success) {
+        const modal = document.getElementById('sos-modal');
+        modal.classList.add('hidden');
+        this.data.successCount++;
+        this.saveData();
+        alert("居然挺过来了？是不是偷偷抽了没告诉我？\n\n香烟污染率下降 2%。\n获得金钱奖励。");
+    }
+},
 
-        if (isIOS && !isStandalone) {
-            const modal = document.getElementById('install-modal');
-            if (modal) {
-                setTimeout(() => {
-                    modal.classList.remove('hidden');
-                }, 2000); // Delay for effect
-            }
+checkPWA() {
+    // Basic iOS check
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+    if (isIOS && !isStandalone) {
+        const modal = document.getElementById('install-modal');
+        if (modal) {
+            setTimeout(() => {
+                modal.classList.remove('hidden');
+            }, 2000); // Delay for effect
         }
     }
+}
 };
 
 document.addEventListener('DOMContentLoaded', () => {

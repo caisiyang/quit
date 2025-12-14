@@ -13,7 +13,17 @@ set /p "commit_msg=请输入提交描述 (按回车默认 'Update'): "
 if "%commit_msg%"=="" set "commit_msg=Update"
 
 echo.
-echo [1/3] 正在添加文件...
+echo [0/4] 正在同步 R2 云端数据...
+call node scripts/sync-r2.js
+if %errorlevel% neq 0 (
+    color 0C
+    echo [错误] 数据同步失败，请检查网络或 R2 配置。
+    pause
+    exit /b
+)
+
+echo.
+echo [1/4] 正在添加文件...
 git add .
 if %errorlevel% neq 0 (
     color 0C
@@ -23,14 +33,14 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo [2/3] 正在提交更改...
+echo [2/4] 正在提交更改...
 git commit -m "%commit_msg%"
 if %errorlevel% neq 0 (
     echo [提示] 没有需要提交的更改，正在尝试推送现有提交...
 )
 
 echo.
-echo [3/3] 正在推送到 GitHub...
+echo [3/4] 正在推送到 GitHub...
 git push
 if %errorlevel% equ 0 goto SUCCESS
 
@@ -58,6 +68,9 @@ if %errorlevel% neq 0 (
     pause
     exit /b
 )
+
+echo.
+echo [4/4] 部署流程结束。
 
 :SUCCESS
 echo.

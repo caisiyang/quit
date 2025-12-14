@@ -14,228 +14,300 @@
       theme: {
         extend: {
           colors: {
-            eva: {
-              black: '#000000',
-              orange: '#FF6600',
-              red: '#CC0000',
-              green: '#00FF00',
-            }
-          },
-          fontFamily: {
-            serif: ['"Source Han Serif SC"', 'serif'],
+            eva: { black: '#000000', orange: '#FF8A00', red: '#E60000', green: '#39FF14', purple: '#8D5CFF' }
           }
-        }
+        },
+        fontFamily: { serif: ['"Source Han Serif SC"', 'serif'] }
       }
     }
   </script>
 </head>
 
-<body class="bg-hex h-screen w-screen overflow-hidden">
+<body class="bg-hex">
+  <div id="app" class="relative w-full">
 
-  <!-- Main Container -->
-  <div id="app" class="relative w-full h-full max-w-[600px] mx-auto flex flex-col">
-
-    <!-- Top Bar (Decor) -->
-    <div class="h-12 border-b-2 border-eva-orange flex justify-between items-center px-4 bg-black/80 z-20">
-      <div class="text-eva-orange font-black text-xs tracking-[0.2em]">毒舌戒烟 // 骂醒你</div>
-      <div class="text-eva-orange font-mono text-xs">V.4.0</div>
-    </div>
-
-    <!-- Content Area (Scrollable/Swappable) -->
-    <div id="content-area" class="flex-1 relative overflow-hidden">
-
-      <!-- PAGE 1: HOME (Combat) -->
-      <section id="view-home" class="absolute inset-0 flex flex-col p-6 transition-transform duration-300">
-        <!-- Timer Display -->
-        <div class="flex-1 flex flex-col justify-center items-center">
-          <div class="eva-border w-full mb-8 text-center relative bg-black/50 backdrop-blur-sm">
-            <div
-              class="absolute -top-3 left-4 bg-black px-2 text-eva-orange text-xs font-bold border border-eva-orange">
-              SYS.TIMER</div>
-            <p class="text-eva-orange text-sm mt-4 tracking-widest">当前你的戒烟进度</p>
-            <div id="main-timer" class="text-6xl font-black text-white my-4 font-mono tracking-tighter">00:00:00</div>
-            <div class="flex justify-between px-8 pb-4 text-xs text-eva-gray-400">
-              <span>累计天数: <span id="days-count" class="text-eva-green font-bold">0</span></span>
-              <span>当前香烟污染率: <span id="pollution-rate" class="text-eva-green font-bold">100%</span></span>
-            </div>
-          </div>
-
-          <!-- SOS Button -->
-          <div class="w-full h-1/3">
-            <button id="btn-sos"
-              class="btn-eva btn-eva-red w-full h-full text-4xl flex flex-col items-center justify-center shadow-[0_0_20px_rgba(204,0,0,0.5)] active:shadow-[0_0_40px_rgba(204,0,0,0.9)] group">
-              <span class="glitch" data-text="烟瘾来袭！">烟瘾来袭！</span>
-              <span class="glitch text-3xl mt-2" data-text="点我防御！">点我防御！</span>
-              <span class="text-sm mt-4 font-mono block opacity-70 group-hover:opacity-100">危险等级：极高</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- PAGE 2: STATS (Data) -->
-      <section id="view-stats"
-        class="absolute inset-0 flex flex-col p-6 transition-transform duration-300 translate-x-[100%] bg-black">
-        <div class="eva-border w-full h-full relative overflow-y-auto">
-          <div class="absolute -top-3 right-4 bg-black px-2 text-eva-orange text-xs font-bold border border-eva-orange">
-            DATA.LOG</div>
-
-          <!-- Header -->
-          <h2 class="text-2xl font-black text-eva-orange mb-8 border-b border-eva-orange pb-2">数据同步率</h2>
-
-          <!-- Physiological Stats -->
-          <div class="mb-8">
-            <h3 class="text-white text-sm mb-2 font-bold"> > 生理机能恢复情况</h3>
-            <div class="w-full bg-gray-900 h-6 border border-eva-green relative">
-              <div id="bar-health" class="h-full bg-eva-green transition-all duration-1000" style="width: 0%"></div>
-              <span class="absolute right-2 top-0 bottom-0 text-xs flex items-center text-black font-bold">0%</span>
-            </div>
-            <p class="text-xs text-eva-green mt-1 font-mono">肺活量重构中...</p>
-          </div>
-
-          <!-- Money Stats -->
-          <div class="mb-8">
-            <h3 class="text-white text-sm mb-2 font-bold"> > 从死神手里抢回的</h3>
-            <div class="flex items-end gap-2">
-              <span class="text-4xl text-eva-orange font-black">¥ <span id="money-saved">0</span></span>
-              <span class="text-xs text-gray-500 mb-2 font-mono">RMB</span>
-            </div>
-            <div class="eva-panel mt-2">
-              <p class="text-xs text-eva-orange">这些钱足够买: <span id="item-equiv" class="font-bold text-white">空气</span>
-              </p>
-            </div>
-          </div>
-
-          <!-- Failure Stats -->
-          <div class="mb-8">
-            <h3 class="text-white text-sm mb-2 font-bold"> > 意志力崩溃次数</h3>
-            <div class="flex items-end gap-2">
-              <span id="fail-count" class="text-4xl text-eva-red font-black">0</span>
-              <span class="text-xs text-gray-500 mb-2 font-mono">次</span>
-            </div>
-            <p class="text-xs text-eva-red mt-1">废物记录</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- PAGE 3: PROFILE (Config) -->
-      <section id="view-profile"
-        class="absolute inset-0 flex flex-col p-6 transition-transform duration-300 translate-x-[200%] bg-black">
-        <div class="eva-border w-full h-full relative overflow-y-auto">
-          <div class="absolute -top-3 left-4 bg-black px-2 text-eva-orange text-xs font-bold border border-eva-orange">
-            PILOT.CONF</div>
-
-          <h2 class="text-2xl font-black text-eva-orange mb-8 border-b border-eva-orange pb-2">烟瘾患者档案</h2>
-
-          <form id="profile-form" class="space-y-6">
-
-            <!-- Field: Reason -->
-            <div class="space-y-2">
-              <label class="block text-xs text-eva-orange font-bold uppercase">戒烟理由 (你的把柄)</label>
-              <div class="flex gap-2">
-                <input type="text" id="inp-reason"
-                  class="flex-1 bg-gray-900 border border-eva-orange p-3 text-white font-serif focus:outline-none focus:border-white transition-colors"
-                  placeholder="填吧，别这都编不出来">
-                <button type="button" id="btn-save-insult"
-                  class="bg-eva-orange text-black font-bold px-4 text-xs hover:bg-white transition-colors">保存</button>
-              </div>
-            </div>
-
-            <!-- Field: Years -->
-            <div class="space-y-2">
-              <label class="block text-xs text-eva-orange font-bold uppercase">烟龄 (默认10年)</label>
-              <input type="number" id="inp-years"
-                class="w-full bg-gray-900 border border-eva-orange p-3 text-white font-serif focus:outline-none focus:border-white"
-                placeholder="10">
-            </div>
-
-            <!-- Field: Cost -->
-            <div class="space-y-2">
-              <label class="block text-xs text-eva-orange font-bold uppercase">单价 (每包多少钱)</label>
-              <input type="number" id="inp-cost" value="25"
-                class="w-full bg-gray-900 border border-eva-orange p-3 text-white font-serif focus:outline-none focus:border-white">
-            </div>
-
-            <div class="pt-8">
-              <button type="submit" class="btn-eva w-full">更新数据并接受审判</button>
-            </div>
-
-          </form>
-        </div>
-      </section>
-
-    </div>
-
-    <!-- Navigation Bar (EVA Style) -->
-    <div class="h-16 border-t-2 border-eva-orange bg-black/90 flex z-30">
-      <button onclick="navTo('home')"
-        class="flex-1 border-r border-eva-dark-gray hover:bg-eva-orange/20 transition-colors flex flex-col items-center justify-center group active">
-        <span class="text-xs font-mono text-gray-500 group-hover:text-eva-orange">01</span>
-        <span class="text-sm font-bold text-eva-orange">作战</span>
-      </button>
-      <button onclick="navTo('stats')"
-        class="flex-1 border-r border-eva-dark-gray hover:bg-eva-orange/20 transition-colors flex flex-col items-center justify-center group">
-        <span class="text-xs font-mono text-gray-500 group-hover:text-eva-orange">02</span>
-        <span class="text-sm font-bold text-eva-orange">数据</span>
-      </button>
-      <button onclick="navTo('profile')"
-        class="flex-1 hover:bg-eva-orange/20 transition-colors flex flex-col items-center justify-center group">
-        <span class="text-xs font-mono text-gray-500 group-hover:text-eva-orange">03</span>
-        <span class="text-sm font-bold text-eva-orange">系统</span>
-      </button>
-    </div>
-
-    <!-- SOS Overlay (Hidden by default) -->
-    <div id="sos-modal" class="hidden fixed inset-0 z-50 bg-red-900/90 flex flex-col items-center justify-center">
-      <div class="absolute inset-0 bg-[url('assets/pattern.png')] opacity-20 pointer-events-none"></div>
-
-      <div class="w-full max-w-md p-8 text-center relative z-10">
-        <div class="mb-4">
-          <span
-            class="bg-black text-eva-red border border-eva-red px-4 py-1 font-black text-xl tracking-[0.5em] animate-pulse">WARNING</span>
-        </div>
-
-        <h1 id="sos-timer" class="text-6xl font-black text-white mb-4 glitch" data-text="05:00">05:00</h1>
-
-        <div class="border-t-2 border-b-2 border-eva-red py-6 my-6 bg-black/50">
-          <p id="glitch-quote"
-            class="text-2xl font-bold text-white leading-tight font-serif min-h-[4rem] flex items-center justify-center">
-            YOU WILL NOT SURVIVE.
-          </p>
-        </div>
-
-        <button id="btn-giveup" class="btn-hard w-full p-4 bg-gray-900 text-gray-500 text-sm hover:text-gray-300">
-          我认怂了，我是废物 (退出)
+    <!-- Header -->
+    <div
+      class="app-header flex items-center justify-between px-3 z-20 relative header-bg border-b border-eva-purple/50">
+      <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-eva-green via-eva-purple to-eva-orange">
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 bg-eva-green rotate-45 shadow-[0_0_5px_#39FF14]"></div>
+        <span class="text-eva-purple font-black text-base tracking-[0.15em]">毒舌戒烟</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="btn-theme-toggle"
+          class="w-6 h-6 flex items-center justify-center text-eva-orange hover:bg-eva-orange/20 rounded transition-colors"
+          title="Switch Theme">
+          <!-- Sun Icon (Default/Light) -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
         </button>
+        <span
+          class="text-eva-orange font-mono font-bold text-[10px] border border-eva-orange px-1.5 py-0.5 rounded-[2px]">v1.0</span>
       </div>
     </div>
 
-    <!-- Install Prompt Overlay -->
-    <div id="install-modal"
-      class="hidden fixed inset-0 z-50 bg-black/90 flex flex-col items-end justify-end pb-8 pr-8 pointer-events-none">
-      <div
-        class="pointer-events-auto bg-gray-900 border-2 border-eva-orange p-6 max-w-sm relative shadow-[0_0_30px_rgba(255,102,0,0.3)]">
-        <div class="absolute -top-3 -left-3 bg-eva-orange text-black font-black text-xs px-2 py-1">系统消息</div>
-        <h3 class="text-eva-orange font-bold text-xl mb-2">终端连接断开</h3>
-        <p class="text-white text-sm leading-relaxed mb-4">
-          初始化连接程序:<br>
-          1. 点击 <span class="inline-block bg-gray-700 px-2 rounded">[分享]</span> 按钮<br>
-          2. 选择 <span class="text-eva-orange font-bold">[添加到主屏幕]</span>
-        </p>
-        <button onclick="document.getElementById('install-modal').classList.add('hidden')"
-          class="text-xs text-gray-500 hover:text-white underline w-full text-right">
-          确认
-        </button>
+    <!-- Content Area -->
+    <div id="content-area">
 
-        <!-- Triangle pointer to bottom -->
-        <div
-          class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-900 border-r-2 border-b-2 border-eva-orange rotate-45">
+      <!-- PAGE 1: HOME -->
+      <section id="view-home" class="absolute inset-0 transition-transform duration-300">
+
+        <!-- Timer Card -->
+        <div class="eva-hud-panel timer-panel relative">
+          <div
+            class="absolute -top-2 left-3 bg-main px-1.5 text-eva-orange text-[10px] font-bold border border-eva-orange">
+            SYS.TIMER <span class="text-[8px] text-secondary">::ACTIVE</span>
+          </div>
+          <p class="timer-label text-eva-purple tracking-[0.15em] font-bold text-center mt-3">人类尊严维持时长</p>
+          <div id="main-timer"
+            class="timer-display font-black text-primary font-tech tracking-wider flex items-center justify-center flex-1">
+            00:00:00</div>
+          <div class="flex justify-between px-2 text-[10px] font-mono border-t border-dashed border-gray-700 pt-2">
+            <div class="flex flex-col items-start">
+              <span class="text-secondary text-[8px]">ELAPSED DAYS</span>
+              <span id="days-count" class="text-eva-green font-bold text-sm">0</span>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-secondary text-[8px]">POLLUTION LVL</span>
+              <span id="pollution-rate" class="text-eva-red font-bold text-sm">100%</span>
+            </div>
+          </div>
         </div>
+
+        <!-- SOS Button with Animated Stripes -->
+        <div class="sos-button-container relative group cursor-pointer" id="btn-sos">
+          <div
+            class="sos-button-inner relative bg-black border-2 border-eva-red overflow-hidden clip-path-polygon shadow-[0_0_15px_rgba(255,0,0,0.3)] transition-all group-hover:shadow-[0_0_30px_rgba(255,0,0,0.6)] active:scale-[0.98]">
+            <!-- Animated Stripes Background -->
+            <div class="sos-stripes-bg"></div>
+            <div class="absolute inset-1 border border-dashed border-eva-red/50 pointer-events-none z-10"></div>
+            <div class="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-eva-red z-10"></div>
+            <div class="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-eva-red z-10"></div>
+            <div class="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-eva-red z-10"></div>
+            <div class="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-eva-red z-10"></div>
+            <div class="relative z-10 flex flex-col items-center">
+              <div class="flex items-center gap-1.5 mb-1">
+                <div class="w-8 h-[1px] bg-eva-red"></div>
+                <span class="text-[10px] font-mono text-eva-red font-bold tracking-[0.15em]">EMERGENCY</span>
+                <div class="w-8 h-[1px] bg-eva-red"></div>
+              </div>
+              <h2 class="sos-title font-black text-white tracking-widest leading-none drop-shadow-[2px_2px_0_#ff0000]">
+                <span class="text-eva-red">警</span>戒<span class="text-eva-red">态</span>势
+              </h2>
+              <h3
+                class="sos-subtitle font-bold text-white mt-1 tracking-[0.3em] group-hover:scale-110 transition-transform">
+                点此迎击</h3>
+              <div class="mt-2 flex items-center gap-1.5 px-2 py-1 bg-eva-red/20 border border-eva-red/50 rounded-sm">
+                <div class="w-1.5 h-1.5 bg-eva-red animate-ping"></div>
+                <span class="text-[8px] text-eva-red font-mono font-bold">PSYCHO-PASS: DANGER</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between mt-1 text-[8px] font-mono text-eva-red/70 font-bold uppercase px-1">
+            <span>Code: 999</span><span>Target: CRAVING</span><span>Mode: DEFENSE</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 2: STATS -->
+      <section id="view-stats"
+        class="absolute inset-0 flex flex-col p-4 transition-transform duration-300 translate-x-[100%] overlay-bg overflow-hidden">
+
+        <!-- Header -->
+        <h2 class="text-lg font-black text-eva-orange mb-2 border-b border-eva-orange pb-1 flex-shrink-0">数据同步率</h2>
+
+        <!-- Health Bar -->
+        <div class="mb-2 flex-shrink-0">
+          <div class="flex justify-between items-end mb-1">
+            <h3 class="text-primary text-[10px] font-bold">> 生理机能恢复</h3>
+            <span id="val-health" class="text-eva-green font-black text-sm font-mono">0.00%</span>
+          </div>
+          <div class="w-full bg-main border border-eva-green/50 h-2">
+            <div id="bar-health" class="h-full bg-eva-green/90 shadow-[0_0_15px_#00FF00] transition-all duration-1000"
+              style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Resource Recovery -->
+        <div class="eva-hud-panel mb-2 flex-shrink-0 py-2">
+          <h3 class="text-eva-orange text-[10px] font-bold tracking-[0.1em] flex items-center gap-1 mb-1">
+            <span class="w-1 h-1 bg-eva-orange rounded-full animate-pulse"></span>RESOURCE RECOVERY
+          </h3>
+          <div class="text-xl font-black text-primary font-tech">¥ <span id="money-saved">0</span></div>
+        </div>
+
+        <!-- Mental Breakdowns -->
+        <div class="eva-hud-panel border-eva-red/50 mb-2 flex-shrink-0 py-2">
+          <h3 class="text-eva-red text-[10px] font-bold tracking-[0.1em] flex items-center gap-1 mb-1">
+            <span class="w-1 h-1 bg-eva-red rounded-full animate-pulse"></span>MENTAL BREAKDOWNS
+          </h3>
+          <div class="flex items-baseline gap-2">
+            <span id="fail-count" class="text-2xl font-black text-primary font-tech">0</span>
+            <span class="text-[10px] text-eva-red font-mono font-bold">TIMES</span>
+          </div>
+        </div>
+
+        <!-- Random Insults Card - Fills remaining space -->
+        <div class="eva-hud-panel border-eva-purple/50 flex-1 flex flex-col min-h-0">
+          <h3 class="text-eva-purple text-[10px] font-bold tracking-[0.1em] flex items-center gap-1 mb-2 flex-shrink-0">
+            <span class="w-1 h-1 bg-eva-purple rounded-full animate-pulse"></span>PSYCHOLOGICAL ARCHIVE
+          </h3>
+          <div class="flex-1 flex items-center justify-center overflow-hidden">
+            <p id="random-insult"
+              class="random-insult-text text-primary font-bold font-serif text-center leading-relaxed transition-all duration-500 opacity-100 px-2">
+              加载中...
+            </p>
+          </div>
+          <div class="mt-2 flex justify-center gap-1 flex-shrink-0">
+            <span class="w-1 h-1 bg-eva-purple/50 rounded-full"></span>
+            <span class="w-1 h-1 bg-eva-purple/50 rounded-full"></span>
+            <span class="w-1 h-1 bg-eva-purple/50 rounded-full"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 3: PROFILE -->
+      <section id="view-profile"
+        class="absolute inset-0 flex flex-col p-3 transition-transform duration-300 translate-x-[200%] overlay-bg overflow-y-auto">
+        <div class="eva-hud-panel border-eva-purple text-center mb-4 py-2">
+          <h2 class="text-xl font-black text-eva-purple tracking-[0.2em]">驾驶员同步</h2>
+        </div>
+        <form id="profile-form" class="space-y-4 flex-1">
+          <div>
+            <label class="text-base text-eva-purple font-bold block mb-2">我的戒烟理由</label>
+            <p class="text-sm text-secondary mb-3">💡 填写你的戒烟理由，点击上传后所有用户都能看到（匿名）</p>
+            <input type="text" id="inp-reason"
+              class="w-full input-theme border-b-2 border-eva-purple/50 py-1.5 focus:outline-none focus:border-eva-green">
+            <button type="button" id="btn-save-insult"
+              class="mt-2 h-7 px-3 bg-eva-purple/20 border border-eva-purple text-eva-purple text-[10px] font-bold hover:bg-eva-purple hover:text-black transition-all">上传云端</button>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[8px] text-secondary font-mono block">烟龄(年)</label>
+              <input type="number" id="inp-years" placeholder="10"
+                class="w-full input-theme border-b-2 border-gray-700 py-1.5 font-tech text-lg focus:outline-none focus:border-eva-orange">
+            </div>
+            <div>
+              <label class="text-[8px] text-secondary font-mono block">单价(CNY)</label>
+              <input type="number" id="inp-cost" value="25"
+                class="w-full input-theme border-b-2 border-gray-700 py-1.5 font-tech text-lg focus:outline-none focus:border-eva-orange">
+            </div>
+          </div>
+          <button type="submit" class="btn-eva w-full text-sm tracking-[0.15em]">更新本人信息</button>
+        </form>
+      </section>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="app-nav nav-bg flex items-end justify-around pb-3 pt-1 z-30 border-t border-eva-purple/30">
+      <button onclick="navTo('home')" class="group w-16 flex flex-col items-center gap-0.5 active:scale-95">
+        <div
+          class="w-12 h-8 border-2 border-eva-orange bg-main clip-path-polygon flex items-center justify-center group-hover:bg-eva-orange group-[.active]:bg-eva-orange transition-all">
+          <span class="font-black text-base text-eva-orange group-hover:text-black group-[.active]:text-black">01</span>
+        </div>
+        <div class="text-[8px] font-bold text-eva-orange">作 战</div>
+      </button>
+      <button onclick="navTo('stats')" class="group w-16 flex flex-col items-center gap-0.5 active:scale-95">
+        <div
+          class="w-12 h-8 border-2 border-eva-green bg-main clip-path-polygon flex items-center justify-center group-hover:bg-eva-green group-[.active]:bg-eva-green transition-all">
+          <span class="font-black text-base text-eva-green group-hover:text-black group-[.active]:text-black">02</span>
+        </div>
+        <div class="text-[8px] font-bold text-eva-green">数 据</div>
+      </button>
+      <button onclick="navTo('profile')" class="group w-16 flex flex-col items-center gap-0.5 active:scale-95">
+        <div
+          class="w-12 h-8 border-2 border-eva-purple bg-main clip-path-polygon flex items-center justify-center group-hover:bg-eva-purple group-[.active]:bg-eva-purple transition-all">
+          <span class="font-black text-base text-eva-purple group-hover:text-black group-[.active]:text-black">03</span>
+        </div>
+        <div class="text-[8px] font-bold text-eva-purple">系 统</div>
+      </button>
+    </div>
+
+    <!-- SOS Modal -->
+    <div id="sos-modal" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center overlay-bg">
+      <div class="absolute inset-0 bg-emergency-pattern opacity-50"></div>
+      <div class="absolute inset-0 bg-red-900/20 animate-pulse"></div>
+      <div class="text-scroll-bg flex flex-col justify-center select-none">
+        <div class="animate-marquee">EMERGENCY EMERGENCY EMERGENCY EMERGENCY EMERGENCY</div>
+        <div class="animate-marquee" style="animation-direction:reverse">DANGER DANGER DANGER DANGER DANGER</div>
+      </div>
+      <div class="relative z-10 w-full max-w-md px-4">
+        <div
+          class="sos-modal-panel eva-hud-panel border-4 border-eva-red bg-black/95 shadow-[0_0_100px_rgba(255,0,0,0.5)]">
+          <div class="flex justify-center -mt-8 mb-4">
+            <div class="bg-black border-2 border-eva-red p-3 shadow-[0_0_20px_#ff0000] rotate-45">
+              <div class="-rotate-45 text-eva-red font-black text-xl animate-pulse">⚠</div>
+            </div>
+          </div>
+          <div class="text-center">
+            <h2 class="text-eva-red font-bold tracking-[0.3em] text-[10px] mb-1">MENTAL CONTAMINATION DETECTED</h2>
+            <h1 id="sos-timer" class="sos-modal-timer font-black text-white font-tech glitch" data-text="05:00">05:00
+            </h1>
+            <div class="border-t border-b border-eva-red/50 py-4 my-4 bg-red-900/10 relative overflow-hidden">
+              <div
+                class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black px-2 text-eva-red text-[8px] font-mono z-10">
+                PSYCHOLOGICAL ATTACK</div>
+              <p id="glitch-quote" class="sos-modal-quote font-bold text-white font-serif px-3 quote-warning">YOU WILL
+                NOT SURVIVE.</p>
+            </div>
+            <button id="btn-giveup" class="sos-giveup-btn w-full">
+              <span class="relative z-10">⚡ 解除精神防御 (放弃) ⚡</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Give Up Modal -->
+    <div id="giveup-modal" class="hidden fixed inset-0 z-[60] overlay-bg flex items-center justify-center p-4">
+      <div class="giveup-modal-content w-full max-w-sm modal-shame-bg">
+        <div class="border-l-4 border-eva-red pl-3 mb-4">
+          <h3 class="text-eva-red font-black text-2xl glitch" data-text="警告">警告</h3>
+        </div>
+        <p class="text-white text-sm font-bold mb-4">
+          <span class="text-eva-red">既然要当逃兵，就选个理由吧。</span><br>
+          <span class="text-[10px] text-gray-400">选一个，<span
+              class="text-white border-b border-eva-red">连按三次</span>确认。</span>
+        </p>
+        <div class="space-y-2" id="shame-options">
+          <button class="btn-shame-opt w-full">我是个没有骨气的废物</button>
+          <button class="btn-shame-opt w-full">尼古丁是我的主人</button>
+          <button class="btn-shame-opt w-full">我不配拥有健康的肺</button>
+          <button class="btn-shame-opt w-full">我就烂，救不了</button>
+        </div>
+        <button onclick="document.getElementById('giveup-modal').classList.add('hidden')"
+          class="mt-4 w-full text-center text-gray-600 text-[10px] hover:text-white py-1.5">[ 算了，再坚持一下 ]</button>
+      </div>
+    </div>
+
+    <!-- Failure Overlay -->
+    <div id="failure-overlay"
+      class="hidden fixed inset-0 z-[70] overlay-bg flex flex-col items-center justify-center pointer-events-none">
+      <div class="absolute inset-0 bg-red-900 animate-pulse mix-blend-overlay"></div>
+      <div class="failure-overlay-text">SYSTEM<br>FAILURE</div>
+      <div class="mt-4 text-eva-red font-mono text-base font-bold tracking-[0.5em] animate-pulse">防御失败</div>
+    </div>
+
+    <!-- Install Prompt -->
+    <div id="install-modal"
+      class="hidden fixed inset-0 z-50 overlay-bg flex items-end justify-end pb-6 pr-4 pointer-events-none">
+      <div class="pointer-events-auto bg-gray-900 border-2 border-eva-orange p-4 max-w-xs">
+        <h3 class="text-eva-orange font-bold text-base mb-1.5">终端连接断开</h3>
+        <p class="text-white text-[10px] mb-3">1. 点击 [分享]<br>2. 选择 [添加到主屏幕]</p>
+        <button onclick="document.getElementById('install-modal').classList.add('hidden')"
+          class="text-[10px] text-gray-500 hover:text-white w-full text-right">确认</button>
       </div>
     </div>
 
   </div>
-
-  <script src="script.js"></script>
+  <script src="script.js?v=4.4"></script>
 </body>
 
 </html>

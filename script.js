@@ -98,25 +98,71 @@ const app = {
     },
 
     async loadInsults() {
+        // Load Official
+        let official = [];
         try {
-            // Priority: Try R2 Custom Domain
             const res = await fetch('https://r2.quit.saaaai.com/insults.json');
-            if (res.ok) {
-                this.data.insults = await res.json();
-            } else {
-                throw new Error("R2 Domain Error");
-            }
+            if (res.ok) official = await res.json();
         } catch (e) {
-            console.warn("R2 DOMAIN FAILED, FALLING BACK TO LOCAL/API", e);
-            // Fallback: Local file
+            console.warn("Failed to load official insults", e);
+            // Fallback
             try {
-                const localRes = await fetch('assets/insults.json');
-                this.data.insults = await localRes.json();
-            } catch (err) {
-                this.data.insults = ["系统错误", "你连报错都看不懂", "这里只有绝望"];
-            }
+                const local = await fetch('assets/insults.json');
+                official = await local.json();
+            } catch (err) { }
+        }
+
+        // Load Community
+        let community = [];
+        try {
+            const res = await fetch('https://r2.quit.saaaai.com/community.json');
+            if (res.ok) community = await res.json();
+        } catch (e) {
+            // It's okay if community file doesn't exist yet
+        }
+
+        // Merge
+        this.data.insults = [...official, ...community];
+
+        if (this.data.insults.length === 0) {
+            this.data.insults = ["系统错误", "你连报错都看不懂", "这里只有绝望"];
         }
     },
+
+    // In setupListeners...
+    // Save Insult (Submission)
+    this.elements.inputs.saveInsult.addEventListener('click', async () => {
+        const text = this.elements.inputs.reason.value;
+        if (!text) return;
+
+        // UI Feedback: Loading
+        const btn = this.elements.inputs.saveInsult;
+        const originalText = btn.innerText;
+        btn.innerText = "...";
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            });
+
+            if (res.ok) {
+                alert("毒舌已收录。");
+                this.elements.inputs.reason.value = ""; // Clear input
+                this.loadInsults(); // Reload to include new one
+            } else {
+                alert("发送失败，可能是网络问题或太长了。");
+            }
+        } catch (e) {
+            console.error(e);
+            alert("系统错误。");
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    });
 
     startTimer() {
         setInterval(() => {
